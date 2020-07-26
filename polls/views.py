@@ -1,35 +1,31 @@
 from django.shortcuts import render, get_object_or_404
-<<<<<<< HEAD
+
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views import generic
 
 from .models import Question, Choice
-=======
-from django.http import Http404, HttpResponse
-from django.utils import timezoneex
-from .models import Question
->>>>>>> 9b88214f3b79816774fe95cdf86eb081f554c702
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
-<<<<<<< HEAD
-=======
-class IndexView(generic.ListView):
-    template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
-
->>>>>>> 9b88214f3b79816774fe95cdf86eb081f554c702
     def get_queryset(self):
         """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
+
+    def get_queryset(self):
+        """
+        Exlude all questions that aren't publushed
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 class ResultsView(generic.DetailView):
